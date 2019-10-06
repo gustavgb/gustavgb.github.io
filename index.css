@@ -1,0 +1,167 @@
+header h1 {
+  text-transform: uppercase;
+  font-size: 10rem;
+  margin: 0 0 5rem;
+  display: flex;
+  justify-content: space-between; }
+
+header h2 {
+  text-transform: uppercase;
+  font-size: 2.775rem;
+  font-weight: 400;
+  margin: 3rem 0;
+  display: flex;
+  justify-content: space-between; }
+  header h2 > span::after {
+    content: "."; }
+
+main {
+  width: 100rem;
+  margin: 0 auto;
+  padding-top: 10rem; }
+
+.media-references {
+  width: 30rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  margin: 10rem auto 20rem; }
+  .media-references a {
+    margin-bottom: 1.6rem; }
+
+.resume-link {
+  font-size: 2.2rem;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+  color: #787878;
+  opacity: 0.85;
+  transition: all 0.2s ease-out;
+  margin: 1rem 0 0; }
+  .resume-link:hover {
+    opacity: 1; }
+
+.section {
+  width: 80%;
+  margin: 10rem auto;
+  padding: 2rem; }
+  .section h2 {
+    font-size: 2.5rem;
+    text-align: center; }
+  .section p {
+    text-align: justify;
+    font-size: 2.2rem;
+    line-height: 1.4em; }
+
+.project {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: black;
+  background-color: transparent;
+  box-shadow: none;
+  transition: all 0.4s ease-out; }
+  .project:hover {
+    background-color: white;
+    box-shadow: 0 0.2rem 1rem 0.2rem #cecece; }
+  .project h3 {
+    font-size: 1.8rem;
+    margin: 1rem 0; }
+  .project p {
+    margin: 1.5rem 0;
+    font-size: 2rem; }
+  .project small {
+    font-size: 1.6rem;
+    color: #878787;
+    margin: 0; }
+
+a.project::after {
+  content: "\2192";
+  position: absolute;
+  display: block;
+  right: 1rem;
+  top: 0;
+  font-size: 5rem;
+  opacity: 0;
+  color: #878787;
+  transition: all 0.2s ease-out; }
+
+a.project:hover::after {
+  right: 2rem;
+  opacity: 1; }
+
+.single-work {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: black;
+  background-color: transparent;
+  box-shadow: none;
+  transition: all 0.4s ease-out; }
+  .single-work h3 {
+    font-size: 1.8rem;
+    margin: 1rem 0;
+    font-weight: 400; }
+  .single-work h4 {
+    font-size: 2rem;
+    margin: 1rem 0; }
+  .single-work p {
+    margin: 1.5rem 0;
+    font-size: 2rem; }
+  .single-work small {
+    font-size: 1.6rem;
+    color: #878787;
+    margin: 0;
+    line-height: 1.25em; }
+
+@media screen and (max-width: 1000px) {
+  header {
+    margin: 0 2rem;
+    background-color: white;
+    padding: 4rem 2rem;
+    box-shadow: 0 0.2rem 1rem 0.2rem #cecece;
+    border-radius: 0.5rem; }
+    header h1 {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap; }
+      header h1 span {
+        margin: 0 0.75rem 0.5rem; }
+    header h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin: 0;
+      flex-direction: column; }
+      header h2 > span {
+        display: block;
+        margin: 1rem 0 0; }
+        header h2 > span::after {
+          content: ""; }
+  main {
+    width: 100%; }
+  .media-references {
+    margin-top: 2rem; } }
+
+@media screen and (max-width: 400px) {
+  .media-references {
+    width: 100%;
+    padding: 0 2rem;
+    margin-bottom: 2rem; }
+  main {
+    padding-top: 2rem; }
+  .section {
+    width: 100%;
+    margin: 5rem 0; }
+    .section p {
+      text-align: left;
+      font-size: 2rem;
+      line-height: 1.25em; }
+    .section .media-references {
+      padding: 0; } }
