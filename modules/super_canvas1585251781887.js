@@ -58,6 +58,7 @@ function renderText (timestamp) {
       return acc
     }, 0)
 
+    const fontSize = canvas.height / rowTexts.length
     if (imageWidth < canvas.width) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -66,7 +67,6 @@ function renderText (timestamp) {
       ctx.textAlign = 'right'
 
       rowTexts.reduce((lastY, text) => {
-        const fontSize = canvas.height / rowTexts.length
         ctx.font = fontSize + 'px ' + fontFamily
         ctx.fillText(text, canvas.width, lastY)
 
@@ -75,6 +75,34 @@ function renderText (timestamp) {
       if (lettersInRow + 1 <= text.length) {
         setTimeout(() => render(letterWidths, lettersInRow + 1), 150)
       }
+    } else if (text.toLowerCase() === 'play') {
+      const result = []
+
+      const canvasX = canvas.getBoundingClientRect().x
+      console.log(canvasX)
+      rowTexts.reduce((lastY, rowText) => {
+        const rowWidth = rowText.split('').reduce((acc, letter) => acc + letterWidths[letter], 0) * fontSize
+
+        console.log(rowWidth)
+        rowText.split('').reduce((lastX, letter) => {
+          const letterWidth = letterWidths[letter] * fontSize
+          const letterHeight = fontSize
+
+          result.push({
+            x: canvasX + canvas.width - rowWidth + lastX,
+            y: lastY,
+            w: letterWidth,
+            h: letterHeight,
+            letter
+          })
+
+          return lastX + letterWidth
+        }, 0)
+
+        return lastY + fontSize
+      }, 0)
+
+      window.startGame(result)
     }
   }
 
@@ -100,9 +128,5 @@ window.addEventListener('keydown', function (e) {
   if (prevText !== text) {
     activeTimestamp = Date.now()
     renderText(activeTimestamp)
-
-    if (text.toLowerCase() === 'play') {
-      window.startGame()
-    }
   }
 })

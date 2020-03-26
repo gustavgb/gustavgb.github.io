@@ -1,8 +1,10 @@
 let gameStarted = false
-window.startGame = function startGame () {
+window.startGame = function startGame (initialLetters) {
   if (gameStarted) {
     return
   }
+
+  console.log(initialLetters)
 
   gameStarted = true
 
@@ -31,7 +33,7 @@ window.startGame = function startGame () {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585243748383.png'
+  playerImg.src = '/modules/rocket1585251781887.png'
 
   function loop () {
     setTimeout(loop, 1000 / 60)
