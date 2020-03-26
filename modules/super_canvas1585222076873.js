@@ -1,4 +1,5 @@
 let activeTimestamp = 0
+let text = 'Gustav Burchardt'
 
 function renderText (timestamp) {
   const canvas = document.getElementById('super-canvas')
@@ -20,7 +21,7 @@ function renderText (timestamp) {
   }
 
   function measureLetters () {
-    return 'abcdefghijklmnopqrstuvwxyzæøå '
+    return text
       .split('')
       .reduce((dic, letter) => {
         ctx.font = '1px ' + fontFamily
@@ -38,7 +39,6 @@ function renderText (timestamp) {
       lettersInRow = 1
     }
 
-    const text = 'Gustav Burchardt'.toLowerCase()
     const letters = text.length
 
     const rowTexts = []
@@ -86,4 +86,18 @@ window.addEventListener('load', () => renderText(activeTimestamp))
 window.addEventListener('resize', function () {
   activeTimestamp = Date.now()
   renderText(activeTimestamp)
+})
+window.addEventListener('keydown', function (e) {
+  const prevText = text
+  const key = e.key
+  if (key === 'Backspace') {
+    text = text.substr(0, text.length - 1)
+  } else if (key.length === 1 && key !== '¤') {
+    text = text + key
+  }
+
+  if (prevText !== text) {
+    activeTimestamp = Date.now()
+    renderText(activeTimestamp)
+  }
 })
