@@ -4,8 +4,6 @@ window.startGame = function startGame (initialLetters) {
     return
   }
 
-  console.log(initialLetters)
-
   window.gameStarted = true
 
   const canvas = document.getElementById('game-canvas')
@@ -35,7 +33,7 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585258547178.png'
+  playerImg.src = '/modules/rocket1585258916715.png'
 
   const bullets = []
 
@@ -50,7 +48,6 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const letters = []
-  window.letters = letters
 
   function addLetter (letter, x, y, w, h) {
     const velocity = h / 1000
@@ -75,8 +72,6 @@ window.startGame = function startGame (initialLetters) {
     obj.w,
     obj.h
   ))
-
-  console.log(letters)
 
   function loop () {
     setTimeout(loop, 1000 / 60)

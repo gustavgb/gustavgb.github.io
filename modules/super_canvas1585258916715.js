@@ -63,7 +63,7 @@ function renderText (timestamp) {
       return acc
     }, 0)
 
-    if (imageWidth < canvas.width) {
+    if (imageWidth < canvas.width / 2 || text.length === 1) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const fontSize = canvas.height / rowTexts.length
