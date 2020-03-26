@@ -117,14 +117,21 @@ function renderText (timestamp) {
     .then(render)
 }
 
+window.forceRenderText = function (newText) {
+  if (newText) {
+    text = newText
+  }
+  activeTimestamp = Date.now()
+  renderText(activeTimestamp)
+}
+
 window.addEventListener('load', () => renderText(activeTimestamp))
 window.addEventListener('resize', function () {
   if (window.gameStarted) {
     return
   }
 
-  activeTimestamp = Date.now()
-  renderText(activeTimestamp)
+  window.forceRenderText()
 })
 window.addEventListener('keydown', function (e) {
   if (window.gameStarted) {
@@ -140,7 +147,6 @@ window.addEventListener('keydown', function (e) {
   }
 
   if (prevText !== text) {
-    activeTimestamp = Date.now()
-    renderText(activeTimestamp)
+    window.forceRenderText()
   }
 })

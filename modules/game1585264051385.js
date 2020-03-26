@@ -39,7 +39,9 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585262902910.png'
+  playerImg.src = '/modules/rocket1585264051385.png'
+
+  let score = 0
 
   const bullets = []
 
@@ -57,7 +59,7 @@ window.startGame = function startGame (initialLetters) {
   window.letters = letters
 
   function addLetter (letter, x, y, w, h, direction) {
-    const velocity = (1000 - h) / 1000
+    const velocity = (1000 - h) / Math.max(1000 - score / 3, 100)
     if (direction === undefined) {
       direction = Math.random() * 2 * Math.PI
     }
@@ -115,6 +117,10 @@ window.startGame = function startGame (initialLetters) {
   ))
 
   function loop () {
+    if (!window.gameStarted) {
+      return
+    }
+
     setTimeout(loop, 1000 / 60)
 
     if (keys.ArrowLeft) {
@@ -152,7 +158,7 @@ window.startGame = function startGame (initialLetters) {
     }
 
     const now = Date.now()
-    if (now - lastSpawnedLetter > 3000) {
+    if (now - lastSpawnedLetter > Math.max(3000 - score / 2, 500)) {
       lastSpawnedLetter = now
       addRandomLetter()
     }
@@ -173,25 +179,28 @@ window.startGame = function startGame (initialLetters) {
       letter.x += letter.vx
       letter.y += letter.vy
       letter.angle += letter.spin
-    }
 
-    for (let i = bullets.length - 1; i >= 0; i--) {
-      const bullet = bullets[i]
-      bullet.x += bullet.vx
-      bullet.y += bullet.vy
+      const dx = letter.x - player.x
+      const dy = letter.y - player.y
+      const angle = Math.atan2(dy, dx)
+      const len = Math.sqrt(dx * dx + dy * dy)
+      const playerX = letter.x + Math.cos(0.5 * Math.PI - angle + letter.angle) * len
+      const playerY = letter.y + Math.sin(0.5 * Math.PI - angle + letter.angle) * len
 
       if (
-        bullet.x < 0 ||
-        bullet.x > canvas.width ||
-        bullet.y < 0 ||
-        bullet.y > canvas.height
+        playerX <= letter.x + letter.w * 0.45 &&
+        letter.x - letter.w * 0.45 <= playerX &&
+        playerY <= letter.y + letter.h * 0.45 &&
+        letter.y - letter.h * 0.45 <= playerY
       ) {
-        bullets.splice(i, 1)
-        break
+        window.gameStarted = false
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        window.forceRenderText('game over. score: ' + score)
+        return
       }
 
-      for (let j = letters.length - 1; j >= 0; j--) {
-        const letter = letters[j]
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const bullet = bullets[i]
         const dx = letter.x - bullet.x
         const dy = letter.y - bullet.y
         const angle = Math.atan2(dy, dx)
@@ -222,9 +231,27 @@ window.startGame = function startGame (initialLetters) {
               letter.w / 2,
               letter.h / 2
             )
+          } else {
+            score += 100
           }
           letters.splice(j, 1)
         }
+      }
+    }
+
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i]
+      bullet.x += bullet.vx
+      bullet.y += bullet.vy
+
+      if (
+        bullet.x < 0 ||
+        bullet.x > canvas.width ||
+        bullet.y < 0 ||
+        bullet.y > canvas.height
+      ) {
+        bullets.splice(i, 1)
+        break
       }
     }
 
@@ -262,6 +289,12 @@ window.startGame = function startGame (initialLetters) {
     ctx.lineTo(0, player.h * (0.35 + vel))
     ctx.fill()
     ctx.restore()
+
+    ctx.fillStyle = 'white'
+    ctx.textBaseline = 'bottom'
+    ctx.textAlign = 'center'
+    ctx.font = '30px monospace'
+    ctx.fillText('SCORE: ' + score, canvas.width / 2, canvas.height - 50)
   }
 
   loop()
