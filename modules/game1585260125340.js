@@ -33,7 +33,7 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585258916715.png'
+  playerImg.src = '/modules/rocket1585260125340.png'
 
   const bullets = []
 
@@ -48,6 +48,7 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const letters = []
+  window.letters = letters
 
   function addLetter (letter, x, y, w, h) {
     const velocity = h / 1000
@@ -58,6 +59,7 @@ window.startGame = function startGame (initialLetters) {
       y,
       w,
       h,
+      diagonal: Math.sqrt(w * w + h * h),
       vx: Math.cos(direction) * velocity,
       vy: Math.sin(direction) * velocity,
       angle: -0.5 * Math.PI,
@@ -82,11 +84,16 @@ window.startGame = function startGame (initialLetters) {
     if (keys.ArrowRight) {
       player.angle += 0.1
     }
-    if (keys.ArrowUp && player.vx * player.vy < 100) {
-      player.vx += Math.cos(player.angle) * 0.05
-      player.vy += Math.sin(player.angle) * 0.05
+    if (player.vx * player.vx + player.vy * player.vy < 100) {
+      if (keys.ArrowUp) {
+        player.vx += Math.cos(player.angle) * 0.05
+        player.vy += Math.sin(player.angle) * 0.05
+      }
+    } else {
+      player.vx *= 0.95
+      player.vy *= 0.95
     }
-    if (keys[' '] && Date.now() - player.lastShootTime > 500) {
+    if (keys[' '] && bullets.length === 0) {
       player.lastShootTime = Date.now()
       shoot()
     }
@@ -106,16 +113,38 @@ window.startGame = function startGame (initialLetters) {
       player.y = -50
     }
 
-    letters.forEach(letter => {
+    for (let j = letters.length - 1; j >= 0; j--) {
+      const letter = letters[j]
+
+      if (
+        letter.x < -letter.diagonal ||
+        letter.x > canvas.width + letter.diagonal ||
+        letter.y < -letter.diagonal ||
+        letter.y > canvas.height + letter.diagonal
+      ) {
+        letters.splice(j, 1)
+        break
+      }
+
       letter.x += letter.vx
       letter.y += letter.vy
       letter.angle += letter.spin
-    })
+    }
 
     for (let i = bullets.length - 1; i >= 0; i--) {
       const bullet = bullets[i]
       bullet.x += bullet.vx
       bullet.y += bullet.vy
+
+      if (
+        bullet.x < 0 ||
+        bullet.x > canvas.width ||
+        bullet.y < 0 ||
+        bullet.y > canvas.height
+      ) {
+        bullets.splice(i, 1)
+        break
+      }
 
       for (let j = letters.length - 1; j >= 0; j--) {
         const letter = letters[j]
@@ -164,7 +193,13 @@ window.startGame = function startGame (initialLetters) {
     ctx.save()
     ctx.translate(player.x, player.y)
     ctx.rotate(player.angle + 0.5 * Math.PI)
-    ctx.drawImage(playerImg, -player.w / 2, -player.w / 2, player.w, player.h)
+    ctx.drawImage(playerImg, -player.w / 2, -player.h / 2, player.w, player.h)
+    ctx.beginPath()
+    ctx.moveTo(-player.w * 0.08, player.h * 0.35)
+    ctx.lineTo(player.w * 0.08, player.h * 0.35)
+    const vel = keys.ArrowUp ? 0.3 : 0
+    ctx.lineTo(0, player.h * (0.35 + vel))
+    ctx.fill()
     ctx.restore()
   }
 
