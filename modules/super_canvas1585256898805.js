@@ -29,6 +29,18 @@ function renderText (timestamp) {
       }, {})
   }
 
+  function getRowTexts (letters, lettersInRow) {
+    const rowTexts = []
+    for (let i = 0; i < Math.floor(letters / lettersInRow); i++) {
+      if (letters - (i * lettersInRow) < lettersInRow * 2) {
+        rowTexts.push(text.substring(i * lettersInRow, text.length))
+      } else {
+        rowTexts.push(text.substr(i * lettersInRow, lettersInRow))
+      }
+    }
+    return rowTexts
+  }
+
   function render (letterWidths, lettersInRow) {
     if (activeTimestamp !== timestamp) {
       return
@@ -40,14 +52,7 @@ function renderText (timestamp) {
 
     const letters = text.length
 
-    const rowTexts = []
-    for (let i = 0; i < Math.floor(letters / lettersInRow); i++) {
-      if (letters - (i * lettersInRow) < lettersInRow * 2) {
-        rowTexts.push(text.substring(i * lettersInRow, text.length))
-      } else {
-        rowTexts.push(text.substr(i * lettersInRow, lettersInRow))
-      }
-    }
+    const rowTexts = getRowTexts(letters, lettersInRow)
 
     const imageWidth = rowTexts.reduce((acc, text) => {
       const fontSize = canvas.height / rowTexts.length
@@ -58,10 +63,10 @@ function renderText (timestamp) {
       return acc
     }, 0)
 
-    const fontSize = canvas.height / rowTexts.length
     if (imageWidth < canvas.width) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+      const fontSize = canvas.height / rowTexts.length
       ctx.fillStyle = 'black'
       ctx.textBaseline = 'top'
       ctx.textAlign = 'right'
@@ -79,18 +84,18 @@ function renderText (timestamp) {
       const result = []
 
       const canvasX = canvas.getBoundingClientRect().x
-      console.log(canvasX)
+      const rowTexts = getRowTexts(letters, lettersInRow - 1)
+      const fontSize = canvas.height / rowTexts.length
       rowTexts.reduce((lastY, rowText) => {
         const rowWidth = rowText.split('').reduce((acc, letter) => acc + letterWidths[letter], 0) * fontSize
 
-        console.log(rowWidth)
         rowText.split('').reduce((lastX, letter) => {
           const letterWidth = letterWidths[letter] * fontSize
           const letterHeight = fontSize
 
           result.push({
-            x: canvasX + canvas.width - rowWidth + lastX,
-            y: lastY,
+            x: canvasX + canvas.width - rowWidth + lastX + letterWidth / 2,
+            y: lastY + letterHeight / 2,
             w: letterWidth,
             h: letterHeight,
             letter
@@ -102,6 +107,7 @@ function renderText (timestamp) {
         return lastY + fontSize
       }, 0)
 
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       window.startGame(result)
     }
   }
@@ -113,10 +119,18 @@ function renderText (timestamp) {
 
 window.addEventListener('load', () => renderText(activeTimestamp))
 window.addEventListener('resize', function () {
+  if (window.gameStarted) {
+    return
+  }
+
   activeTimestamp = Date.now()
   renderText(activeTimestamp)
 })
 window.addEventListener('keydown', function (e) {
+  if (window.gameStarted) {
+    return
+  }
+
   const prevText = text
   const key = e.key
   if (key === 'Backspace') {
