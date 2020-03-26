@@ -39,7 +39,7 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585262333437.png'
+  playerImg.src = '/modules/rocket1585262902910.png'
 
   const bullets = []
 
@@ -152,7 +152,7 @@ window.startGame = function startGame (initialLetters) {
     }
 
     const now = Date.now()
-    if (now - lastSpawnedLetter > 1000) {
+    if (now - lastSpawnedLetter > 3000) {
       lastSpawnedLetter = now
       addRandomLetter()
     }
@@ -206,6 +206,23 @@ window.startGame = function startGame (initialLetters) {
           letter.y - letter.h * 0.45 <= bulletY
         ) {
           bullets.splice(i, 1)
+
+          if (letter.h > 70) {
+            addLetter(
+              letter.letter,
+              letter.x,
+              letter.y,
+              letter.w / 2,
+              letter.h / 2
+            )
+            addLetter(
+              letter.letter,
+              letter.x,
+              letter.y,
+              letter.w / 2,
+              letter.h / 2
+            )
+          }
           letters.splice(j, 1)
         }
       }
