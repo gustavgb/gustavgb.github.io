@@ -31,7 +31,7 @@ window.startGame = function startGame () {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585243484926.png'
+  playerImg.src = '/modules/rocket1585243748383.png'
 
   function loop () {
     setTimeout(loop, 1000 / 60)
