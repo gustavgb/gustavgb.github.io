@@ -13,6 +13,13 @@ window.startGame = function startGame (initialLetters) {
   canvas.width = rect.width
   canvas.height = rect.height
 
+  const allLetters = 'abcdefghijklmnopqrstuvWxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const allLetterWidths = allLetters.split('').reduce((acc, letter) => {
+    ctx.font = '1px Phorssa'
+    acc[letter] = ctx.measureText(letter).width
+    return acc
+  }, [])
+
   const keys = {}
   window.addEventListener('keydown', function (e) {
     keys[e.key] = true
@@ -28,12 +35,11 @@ window.startGame = function startGame (initialLetters) {
     h: 100,
     vx: 0,
     vy: 0,
-    angle: -0.5 * Math.PI,
-    lastShootTime: 0
+    angle: -0.5 * Math.PI
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585260125340.png'
+  playerImg.src = '/modules/rocket1585262333437.png'
 
   const bullets = []
 
@@ -50,9 +56,11 @@ window.startGame = function startGame (initialLetters) {
   const letters = []
   window.letters = letters
 
-  function addLetter (letter, x, y, w, h) {
-    const velocity = h / 1000
-    const direction = Math.random() * 2 * Math.PI
+  function addLetter (letter, x, y, w, h, direction) {
+    const velocity = (1000 - h) / 1000
+    if (direction === undefined) {
+      direction = Math.random() * 2 * Math.PI
+    }
     letters.push({
       letter,
       x,
@@ -67,6 +75,37 @@ window.startGame = function startGame (initialLetters) {
     })
   }
 
+  function addRandomLetter () {
+    const letter = allLetters[Math.floor(Math.random() * 52)]
+    const h = Math.random() * 230 + 70
+    const w = allLetterWidths[letter] * h
+
+    let x, y
+    if (Math.random() > 0.5) {
+      x = Math.random() * (canvas.width + h * 2) - h
+      y = Math.floor(Math.random()) * (canvas.height + h * 2) - h
+    } else {
+      x = Math.floor(Math.random()) * (canvas.width + h * 2) - h
+      y = Math.random() * (canvas.height + h * 2) - h
+    }
+
+    const direction = Math.atan2(
+      Math.random() * canvas.height - y,
+      Math.random() * canvas.width - x
+    )
+
+    addLetter(
+      letter,
+      x,
+      y,
+      w,
+      h,
+      direction
+    )
+  }
+
+  let lastSpawnedLetter = Date.now()
+
   initialLetters.forEach(obj => addLetter(
     obj.letter,
     obj.x,
@@ -79,10 +118,10 @@ window.startGame = function startGame (initialLetters) {
     setTimeout(loop, 1000 / 60)
 
     if (keys.ArrowLeft) {
-      player.angle -= 0.1
+      player.angle -= 0.05
     }
     if (keys.ArrowRight) {
-      player.angle += 0.1
+      player.angle += 0.05
     }
     if (player.vx * player.vx + player.vy * player.vy < 100) {
       if (keys.ArrowUp) {
@@ -94,7 +133,6 @@ window.startGame = function startGame (initialLetters) {
       player.vy *= 0.95
     }
     if (keys[' '] && bullets.length === 0) {
-      player.lastShootTime = Date.now()
       shoot()
     }
 
@@ -113,14 +151,20 @@ window.startGame = function startGame (initialLetters) {
       player.y = -50
     }
 
+    const now = Date.now()
+    if (now - lastSpawnedLetter > 1000) {
+      lastSpawnedLetter = now
+      addRandomLetter()
+    }
+
     for (let j = letters.length - 1; j >= 0; j--) {
       const letter = letters[j]
 
       if (
-        letter.x < -letter.diagonal ||
-        letter.x > canvas.width + letter.diagonal ||
-        letter.y < -letter.diagonal ||
-        letter.y > canvas.height + letter.diagonal
+        letter.x + letter.vx * 10 < -letter.h ||
+        letter.x + letter.vx * 10 > canvas.width + letter.h ||
+        letter.y + letter.vy * 10 < -letter.h ||
+        letter.y + letter.vy * 10 > canvas.height + letter.h
       ) {
         letters.splice(j, 1)
         break
