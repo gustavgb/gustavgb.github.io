@@ -73,7 +73,9 @@ function renderText (timestamp) {
 
         return lastY + fontSize
       }, 0)
-      setTimeout(() => render(letterWidths, lettersInRow + 1), 150)
+      if (lettersInRow + 1 <= text.length) {
+        setTimeout(() => render(letterWidths, lettersInRow + 1), 150)
+      }
     }
   }
 
