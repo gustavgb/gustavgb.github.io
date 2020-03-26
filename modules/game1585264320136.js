@@ -39,7 +39,7 @@ window.startGame = function startGame (initialLetters) {
   }
 
   const playerImg = new window.Image()
-  playerImg.src = '/modules/rocket1585264051385.png'
+  playerImg.src = '/modules/rocket1585264320136.png'
 
   let score = 0
 
