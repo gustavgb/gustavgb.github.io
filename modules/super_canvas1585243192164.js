@@ -3,13 +3,12 @@ let text = 'Gustav Burchardt'
 
 function renderText (timestamp) {
   const canvas = document.getElementById('super-canvas')
-
+  const ctx = canvas.getContext('2d')
   const rect = canvas.getBoundingClientRect()
 
   canvas.width = rect.width
   canvas.height = rect.height
 
-  const ctx = canvas.getContext('2d')
   const fontFamily = 'Phorssa'
 
   function preloadFont () {
@@ -101,5 +100,9 @@ window.addEventListener('keydown', function (e) {
   if (prevText !== text) {
     activeTimestamp = Date.now()
     renderText(activeTimestamp)
+
+    if (text.toLowerCase() === 'play') {
+      window.startGame()
+    }
   }
 })
