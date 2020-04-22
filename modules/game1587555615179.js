@@ -36,7 +36,7 @@ window.startGame = function startGame(initialLetters) {
     angle: -0.5 * Math.PI
   };
   var playerImg = new window.Image();
-  playerImg.src = '/modules/rocket1587555537513.png';
+  playerImg.src = '/modules/rocket1587555615179.png';
   var score = 0;
   var bullets = [];
 
